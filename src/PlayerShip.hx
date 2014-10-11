@@ -1,28 +1,39 @@
-package;
-
+package ;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.atlas.AtlasRegion;
+import com.haxepunk.graphics.atlas.TextureAtlas;
+import com.haxepunk.graphics.Image;
 import com.haxepunk.HXP;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 
 /**
- * ...
- * @author pm
+ * Player ship.
+ * @author Kirill Poletaev
  */
 class PlayerShip extends Entity
 {
 	private var movespeed:Int;
+	private var bulletDelay:Int;
+	private var currentDelay:Int;
+	private var atlas:TextureAtlas;
+	private var alternateCannon:Bool;
+	private var bulletImage:Image;
 
-	public function new(g:Dynamic) 
+	public function new(atlas:TextureAtlas) 
 	{
 		super();
-		graphic = g;
+		graphic = new Image(atlas.getRegion("playerShip"));
 		movespeed = 8;
 		width = 64;
 		height = 48;
 		x = HXP.width/2 - width/2;
 		y = HXP.height - 80;
+		bulletDelay = 5;
+		currentDelay = 0;
+		this.atlas = atlas;
+		alternateCannon = true;
+		bulletImage = new Image(atlas.getRegion("bullet"));
 	}
 	
 	override public function update() {
@@ -43,6 +54,24 @@ class PlayerShip extends Entity
 		if (this.y < 0) this.y = 0;
 		if (this.x > HXP.width - width) this.x = HXP.width - width;
 		if (this.y > HXP.height - height) this.y = HXP.height - height;
+		
+		if (Input.check(Key.SPACE)) {
+			if (currentDelay == 0) {
+				currentDelay = bulletDelay;
+				var b:Bullet = new Bullet(bulletImage);
+				scene.add(b);
+				if(alternateCannon){
+					b.x = x;
+				}else {
+					b.x = x + 50;
+				}
+				alternateCannon = !alternateCannon;
+				b.y = y;
+			}
+		}
+		if (currentDelay > 0) {
+			currentDelay--;
+		}
 	}
 	
 }

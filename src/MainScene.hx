@@ -20,7 +20,7 @@ class MainScene extends Scene
 		
 		var atlas:TextureAtlas = TextureAtlas.loadTexturePacker("atlas/atlas.xml");
 		
-		player = new PlayerShip(new Image(atlas.getRegion("playerShip")));
+		player = new PlayerShip(atlas);
 		add(player);
 	}
 	  
